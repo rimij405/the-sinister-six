@@ -21,6 +21,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             [HideInInspector] public float CurrentTargetSpeed = 8f;
             public float Stamina = 1;
             public float MaxStamina = 1;
+            public float Health = 1;
+            public float MaxHelth = 1;
 
 #if !MOBILE_INPUT
             private bool m_Running;
@@ -50,11 +52,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
 	            {
 		            CurrentTargetSpeed *= RunMultiplier;
 		            m_Running = true;
-                    Debug.Log("RUNNING");
                 }
 	            else
 	            {
-                    Debug.Log("NOT RUNNING");
 		            m_Running = false;
 	            }
 #endif
@@ -138,6 +138,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 m_Jump = true;
             }
+
+            if (Input.GetKeyDown(KeyCode.Mouse0));
         }
 
 
