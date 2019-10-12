@@ -19,6 +19,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             public float JumpForce = 30f;
             public AnimationCurve SlopeCurveModifier = new AnimationCurve(new Keyframe(-90.0f, 1.0f), new Keyframe(0.0f, 1.0f), new Keyframe(90.0f, 0.0f));
             [HideInInspector] public float CurrentTargetSpeed = 8f;
+            public float Stamina = 1;
+            public float MaxStamina = 1;
 
 #if !MOBILE_INPUT
             private bool m_Running;
@@ -44,13 +46,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
 					CurrentTargetSpeed = ForwardSpeed;
 				}
 #if !MOBILE_INPUT
-	            if (Input.GetKey(RunKey))
+	            if (Input.GetKey(RunKey) && Stamina > 0)
 	            {
 		            CurrentTargetSpeed *= RunMultiplier;
 		            m_Running = true;
-	            }
+                    Debug.Log("RUNNING");
+                }
 	            else
 	            {
+                    Debug.Log("NOT RUNNING");
 		            m_Running = false;
 	            }
 #endif
@@ -139,6 +143,21 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void FixedUpdate()
         {
+            if (Running)
+            {
+                if (movementSettings.Stamina > 0)
+                {
+                    movementSettings.Stamina -= 0.01f;
+                }
+            }
+            else
+            {
+                if (movementSettings.Stamina < movementSettings.MaxStamina)
+                {
+                    movementSettings.Stamina += 0.01f;
+                }
+            }
+
             GroundCheck();
             Vector2 input = GetInput();
 
