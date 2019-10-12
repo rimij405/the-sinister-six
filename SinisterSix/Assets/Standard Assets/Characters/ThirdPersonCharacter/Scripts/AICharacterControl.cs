@@ -17,11 +17,14 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private float timer;
 
         public bool isBound;
+        public float boundTimer;
+        public float boundTime;
 
         // Use this for initialization
         void OnEnable()
         {
             timer = wanderTimer;
+            boundTime = boundTimer;
         }
 
 
