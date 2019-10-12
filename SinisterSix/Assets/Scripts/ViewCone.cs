@@ -108,6 +108,10 @@ public class ViewCone : MonoBehaviour
         // Add events for when view cone loses target.
         this.onTargetLost.AddListener(this.TargetLost);
         this.onTargetLost.AddListener(this.UpdateGizmoColor);
+
+        // First frame update.
+        this.UpdateGizmoColor();
+        this.UpdateColliderRadius();
     }
 
     // Update is called once per frame
@@ -134,40 +138,76 @@ public class ViewCone : MonoBehaviour
     public void UpdateColliderRadius() => this.Collider.radius = this.range;
 
     /// <summary>
-    /// Called when the trigger is entered.
+    /// On trigger enter, check if in view.
     /// </summary>
-    /// <param name="other">The other collider.</param>
-    public void OnTriggerStay(Collider other)
+    /// <param name="other"></param>
+    public void OnTriggerEnter(Collider other)
     {
-        // If target is currently being seen, do nothing.
-        if (this.targetSeen)
-        {
-            // Do nothing, target is already being tracked.
-            Debug.Log("Target is already being tracked.");
-            return;
-        }
-
         // Check target against collider.
-        if(!this.TargetExists || other.gameObject != this.target)
+        if (!this.TargetExists || other.gameObject != this.target)
         {
             // Do nothing if not the appropriate target.
             Debug.Log("Trigger activated by non-targeted game object.");
             return;
         }
+        else
+        {
+            Debug.Log("Trigger entered by target.");
+        }
 
+
+        // Check if the target is in the view cone.
+        if (this.IsTargetInView())
+        {
+            // If in cone, invoke seen target event.
+            this.onTargetSeen.Invoke();
+        }
+        else
+        {
+            // If not in cone, invoke lost target event.
+            this.onTargetLost.Invoke();
+        }
+    }
+
+    /// <summary>
+    /// On trigger stay, check raycasts.
+    /// </summary>
+    /// <param name="other"></param>
+    public void OnTriggerStay(Collider other)
+    {
         // Check if the target object is being searched for.
         if (!this.isSearching)
         {
             // Do nothing, because not in search mode.
-            Debug.Log("Is not searching for target at the moment.");
+            Debug.Log("OnTriggerStay: Viewer is not in search mode.");
+            return;
+        }
+
+        // Does the target exist? If not, nothing to find.
+        if (!this.TargetExists || other.gameObject != this.target)
+        {
+            // Do nothing, because no target exists.
+            Debug.Log("OnTriggerStay: No target exists.");
             return;
         }
 
         // Check if the target is in the view cone.
-        if (this.IsTargetInCone())
+        if (this.IsTargetInView())
         {
-            this.onTargetSeen.Invoke();
-        }   
+            // If in view, and not currently seen, invoke the seen event.
+            if (!this.targetSeen)
+            {
+                this.onTargetSeen.Invoke();
+            }
+        }
+        else
+        {
+            // If not in view, and currently seen, invoke the lost event.
+            if (this.targetSeen)
+            {
+                this.onTargetLost.Invoke();
+            }
+        }
     }
 
     /// <summary>
@@ -176,27 +216,48 @@ public class ViewCone : MonoBehaviour
     /// <param name="other">Other collider.</param>
     public void OnTriggerExit(Collider other)
     {
-        if(this.isSearching && this.TargetExists && other.gameObject == this.target)
+        if (this.targetSeen && this.TargetExists && other.gameObject == this.target)
         {
+            Debug.Log("Trigger exited by the target.");
             this.onTargetLost.Invoke();
-        }        
+        }
     }
 
     // Check if in cone.
-    bool IsTargetInCone()
+    bool IsTargetInView()
     {
         // If the target exists.
         if (this.TargetExists)
         {
-            Vector3 direction = this.target.transform.position - this.transform.position;
-            float angle = Vector3.Angle(direction, this.transform.forward);
+            // Measure the angles.
+            float halfFOV = this.fieldOfView * 0.5f;
+            Vector3 targetRay = this.target.transform.position - this.transform.position;
+            float targetAngle = Vector3.Angle(targetRay, this.transform.forward);
 
-            if (angle < fieldOfView * 0.5f)
+            // Check if it's in range and in angle.
+            if((targetRay.magnitude < this.Collider.radius * 0.5f) && (targetAngle < halfFOV))
             {
+                // If within bounds, perform raycast.
                 RaycastHit hit;
-
-
+                if(Physics.Raycast(this.transform.position, targetRay.normalized, out hit, this.Collider.radius)) 
+                {
+                    if(hit.collider.gameObject == this.target)
+                    {
+                        Debug.Log("Target hit by raycast.");
+                        return true;
+                    }       
+                    else
+                    {
+                        Debug.Log("Non-target hit by raycast.");
+                    }
+                }
+                else
+                {
+                    Debug.Log("Nothing hit by raycast.");
+                }
             }
+            Debug.Log("Target is not in view.");
+            return false;
         }
 
         // If not true, return false.
@@ -209,18 +270,31 @@ public class ViewCone : MonoBehaviour
         // Set the gizmo color.
         Gizmos.color = this.gizmoColor;
 
-        float halfFOV = this.fieldOfView / 2.0F;
+        // Measure the angles.
+        float halfFOV = this.fieldOfView * 0.5f;
+        Vector3 targetRay = this.target.transform.position - this.transform.position;
+        float targetAngle = Vector3.Angle(targetRay, this.transform.forward);
 
-        Quaternion leftRotation = Quaternion.AngleAxis(-halfFOV, Vector3.up);
-        Quaternion rightRotation = Quaternion.AngleAxis(halfFOV, Vector3.up);
+        // Direction rays.
+        Vector3 forwardRay = this.transform.forward * this.Collider.radius * 0.5f;
+        Vector3 leftRay = Quaternion.AngleAxis(-halfFOV, Vector3.up) * forwardRay;
+        Vector3 rightRay = Quaternion.AngleAxis(halfFOV, Vector3.up) * forwardRay;
 
-        Vector3 leftDirection = leftRotation * transform.forward * this.range;
-        Vector3 rightDirection = rightRotation * transform.forward * this.range;
+        // Draw the direction rays.
+        Gizmos.DrawRay(this.transform.position, forwardRay);
+        Gizmos.DrawRay(this.transform.position, leftRay);
+        Gizmos.DrawRay(this.transform.position, rightRay);
 
-        // Draw left, right, and forward rays.
-        Gizmos.DrawRay(transform.position, transform.forward * this.range);
-        Gizmos.DrawRay(transform.position, leftDirection);
-        Gizmos.DrawRay(transform.position, rightDirection);
+        // Check if the target is within the range and angles.
+        bool isInRange = (targetRay.magnitude < this.Collider.radius * 0.5f);
+        bool isInAngle = (targetAngle < halfFOV);
+
+        // Change ray color if target is within angles.
+        Gizmos.color = (isInRange && isInAngle) ? Color.cyan : this.gizmoColor;
+        
+        // Draw target ray and target sphere.
+        Gizmos.DrawRay(this.transform.position, targetRay);
+        Gizmos.DrawWireSphere(this.target.transform.position, 0.5f);
 
     }
 
