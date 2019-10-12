@@ -134,12 +134,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else
             {
-                if (hit.transform.tag == "Enemy")
+                if (hit.transform.gameObject.tag == "Enemy")
                 {
+                    hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
                     hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
                 }
             }
-            transform.position = hit.point + hit.normal;
         }
 
         private void Start()

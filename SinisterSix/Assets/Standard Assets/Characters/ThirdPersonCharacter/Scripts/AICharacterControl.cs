@@ -13,18 +13,18 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public Transform target;                                    // target to aim for
 
         public float wanderRadius;
-        public float wanderTimer;
+        public float wanderTime;
         private float timer;
 
         public bool isBound;
-        public float boundTimer;
+        private float boundTimer;
         public float boundTime;
 
         // Use this for initialization
         void OnEnable()
         {
-            timer = wanderTimer;
-            boundTime = boundTimer;
+            timer = wanderTime;
+            boundTimer = boundTime;
         }
 
 
@@ -45,13 +45,31 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             //    agent.SetDestination(target.position);
 
             if (agent.remainingDistance > agent.stoppingDistance && !isBound)
+            {
                 character.Move(agent.desiredVelocity, false, false);
+            }
             else
+            {
                 character.Move(Vector3.zero, false, false);
+            }
 
             timer += Time.deltaTime;
 
-            if (timer >= wanderTimer)
+            //bound cooldown
+            if (isBound)
+            {
+                boundTimer += Time.deltaTime;
+
+                if (boundTimer >= boundTime)
+                {
+                    agent.isStopped = false;
+                    isBound = false;
+                    boundTime = 0;
+                }
+            }
+
+            //new wander pos cooldown
+            if (timer >= wanderTime && !isBound)
             {
                 Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
 
