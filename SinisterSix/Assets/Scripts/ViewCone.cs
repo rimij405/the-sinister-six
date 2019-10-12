@@ -16,6 +16,11 @@ public class ViewCone : MonoBehaviour
     public float fieldOfView = 110f;
 
     /// <summary>
+    /// Range in meters of the vision.
+    /// </summary>
+    public float range = 10.0f;
+
+    /// <summary>
     /// Is the target in sight.
     /// </summary>
     public bool targetInSight = false;
@@ -42,9 +47,22 @@ public class ViewCone : MonoBehaviour
         
     }
 
-
+    // Draw view cone reference.
     private void OnDrawGizmosSelected()
     {
+
+        float halfFOV = this.fieldOfView / 2.0F;
+
+        Quaternion leftRotation = Quaternion.AngleAxis(-halfFOV, Vector3.up);
+        Quaternion rightRotation = Quaternion.AngleAxis(halfFOV, Vector3.up);
+
+        Vector3 leftDirection = leftRotation * transform.forward;
+        Vector3 rightDirection = rightRotation * transform.forward;
+
+        // Draw left, right, and forward rays.
+        Gizmos.DrawRay(transform.position, transform.forward);
+        Gizmos.DrawRay(transform.position, leftDirection);
+        Gizmos.DrawRay(transform.position, rightDirection);
 
     }
 
