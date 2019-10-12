@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+using UnityStandardAssets.Characters.ThirdPerson;
 
 namespace UnityStandardAssets.Characters.FirstPerson
 {
@@ -21,6 +22,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             [HideInInspector] public float CurrentTargetSpeed = 8f;
             public float Stamina = 1;
             public float MaxStamina = 1;
+            public float Health = 1;
+            public float MaxHelth = 1;
+
 
 #if !MOBILE_INPUT
             private bool m_Running;
@@ -50,11 +54,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
 	            {
 		            CurrentTargetSpeed *= RunMultiplier;
 		            m_Running = true;
-                    Debug.Log("RUNNING");
                 }
 	            else
 	            {
-                    Debug.Log("NOT RUNNING");
 		            m_Running = false;
 	            }
 #endif
@@ -92,6 +94,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_YRotation;
         private Vector3 m_GroundContactNormal;
         private bool m_Jump, m_PreviouslyGrounded, m_Jumping, m_IsGrounded;
+        public GameObject player;
 
 
         public Vector3 Velocity
@@ -121,23 +124,49 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
         }
 
+        public void Bind()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (!Physics.Raycast(ray, out hit))
+            {
+                return;
+            }
+            else
+            {
+                if (hit.transform.gameObject.tag == "Enemy")
+                {
+                    hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
+                    hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
+                }
+            }
+        }
 
         private void Start()
         {
             m_RigidBody = GetComponent<Rigidbody>();
             m_Capsule = GetComponent<CapsuleCollider>();
             mouseLook.Init (transform, cam.transform);
+
+            player = GameObject.Find("Player");
         }
 
 
         private void Update()
         {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Bind();
+            }
+
             RotateView();
 
             if (CrossPlatformInputManager.GetButtonDown("Jump") && !m_Jump)
             {
                 m_Jump = true;
             }
+
+            if (Input.GetKeyDown(KeyCode.Mouse0));
         }
 
 

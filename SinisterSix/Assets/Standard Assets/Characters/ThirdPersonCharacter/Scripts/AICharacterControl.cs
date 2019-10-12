@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace UnityStandardAssets.Characters.ThirdPerson
 {
@@ -10,6 +11,21 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public UnityEngine.AI.NavMeshAgent agent { get; private set; }             // the navmesh agent required for the path finding
         public ThirdPersonCharacter character { get; private set; } // the character we are controlling
         public Transform target;                                    // target to aim for
+
+        public float wanderRadius;
+        public float wanderTime;
+        private float timer;
+
+        public bool isBound;
+        private float boundTimer;
+        public float boundTime;
+
+        // Use this for initialization
+        void OnEnable()
+        {
+            timer = wanderTime;
+            boundTimer = boundTime;
+        }
 
 
         private void Start()
@@ -25,19 +41,63 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
         private void Update()
         {
-            if (target != null)
-                agent.SetDestination(target.position);
+            //if (target != null)
+            //    agent.SetDestination(target.position);
 
-            if (agent.remainingDistance > agent.stoppingDistance)
+            if (agent.remainingDistance > agent.stoppingDistance && !isBound)
+            {
                 character.Move(agent.desiredVelocity, false, false);
+            }
             else
+            {
                 character.Move(Vector3.zero, false, false);
+            }
+
+            timer += Time.deltaTime;
+
+            //bound cooldown
+            if (isBound)
+            {
+                boundTimer += Time.deltaTime;
+
+                if (boundTimer >= boundTime)
+                {
+                    agent.isStopped = false;
+                    isBound = false;
+                    boundTime = 0;
+                }
+            }
+
+            //new wander pos cooldown
+            if (timer >= wanderTime && !isBound)
+            {
+                Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
+
+                agent.SetDestination(newPos);
+
+                Debug.Log("target updated");
+
+                timer = 0;
+            }
         }
 
 
         public void SetTarget(Transform target)
         {
             this.target = target;
+        }
+
+        public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask)
+        {
+            Vector3 randDirection = UnityEngine.Random.insideUnitSphere * dist;
+
+            randDirection += origin;
+
+            NavMeshHit navHit;
+
+            NavMesh.SamplePosition(randDirection, out navHit, dist, layermask);
+
+            return navHit.position;
         }
     }
 }
