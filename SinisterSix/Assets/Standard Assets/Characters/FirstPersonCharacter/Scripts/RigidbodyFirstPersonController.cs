@@ -105,6 +105,10 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float reticleExpandTimer = 0.0f;
         public float expandAlpha;
         public float shrinkAlpha;
+        public bool isDraining;
+        public Drain lastSpawner;
+        public bool isExpandOk = true;
+        public bool isReticleLooping = false;
 
         public Vector3 Velocity
         {
@@ -165,38 +169,68 @@ namespace UnityStandardAssets.Characters.FirstPerson
             child4.GetComponent<ParticleSystem>().Play();
         }
 
-        IEnumerator Example2(Transform child0, Transform child2, Transform child3, Transform child4)
-        {
-            yield return new WaitForSeconds(.1f);
-            child0.GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
-            child0.GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
-            child2.GetComponent<ParticleSystem>().Play();
-            child3.GetComponent<ParticleSystem>().Play();
-            child4.GetComponent<ParticleSystem>().Play();
-        }
-
         private void Drain()
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (!Physics.Raycast(ray, out RaycastHit hit))
+        {            
+            if (Input.GetKey(KeyCode.Mouse0))
             {
-                return;
-            }
-            else
-            {
-                if (hit.transform.gameObject.tag == "Spawner" && Input.GetKey(KeyCode.Mouse0))
+                isReticleShrinking = true;
+                isExpandOk = false;
+                isReticleLooping = true;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (!Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    if (hit.transform.gameObject.GetComponent<Drain>().isCorrupted && !hit.transform.gameObject.GetComponent<Drain>().isBeingDrained)
-                    {
-                    
-                        hit.transform.gameObject.GetComponent<Drain>().isBeingDrained = true;
-                    
-                    }
+                    return;
                 }
                 else
                 {
-                    hit.transform.gameObject.GetComponent<Drain>().isBeingDrained = false;
+                    switch (hit.transform.gameObject.tag)
+                    {
+                        case "Spawner":
+                            if (hit.transform.gameObject.GetComponent<Drain>().isCorrupted)
+                            {
+                                if (!hit.transform.gameObject.GetComponent<Drain>().isBeingDrained)
+                                {
+                                    hit.transform.gameObject.GetComponent<Drain>().isBeingDrained = true;
+                                    lastSpawner = hit.transform.gameObject.GetComponent<Drain>();
+                                    lastSpawner.GetComponent<ParticleSystem>().Play();
+                                    Debug.Log("is being drained true");
+                                }
+                            }
+                            else
+                            {
+                                if (lastSpawner != null)
+                                {
+                                    lastSpawner.transform.gameObject.GetComponent<ParticleSystem>().Stop();
+                                }
+                            }
+                            break;
+                        case "Enemy":
+                            break;
+                        default:
+                            if (lastSpawner != null)
+                            {
+                                Debug.Log("is being drained false not a spawner");
+
+                                lastSpawner.isBeingDrained = false;
+                                lastSpawner.transform.gameObject.GetComponent<ParticleSystem>().Stop();
+                                lastSpawner = null;
+                            }
+                            break;
+                    }
                 }
+            }
+            else
+            {
+                if (lastSpawner != null)
+                {
+                    Debug.Log("is being drained false input released");
+
+                    lastSpawner.isBeingDrained = false;
+                    lastSpawner.transform.gameObject.GetComponent<ParticleSystem>().Stop();
+                    lastSpawner = null;
+                }
+                isExpandOk = true;
+                isReticleLooping = false;
             }
         }
 
@@ -219,11 +253,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 Bind();
             }
 
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                isReticleShrinking = true;
-                Drain();
-            }
+
+            Drain();
 
             RotateView();
 
@@ -232,7 +263,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_Jump = true;
             }
 
-            if(isReticleShrinking)
+            if(isReticleShrinking && !isReticleExpanding)
             {
                 reticleShrinkTimer += Time.deltaTime;
 
@@ -243,7 +274,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 reticle.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(15, 10, shrinkAlpha), 0, 0);
                 reticle.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(-15, -10, shrinkAlpha), 0, 0);
 
-                if(reticleShrinkTimer >= 1)
+                if(shrinkAlpha > 1)
                 {
                     isReticleShrinking = false;
                     isReticleExpanding = true;
@@ -251,21 +282,27 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 }
             }
 
-            if (isReticleExpanding)
+            if (isReticleExpanding && isExpandOk)
             {
-                reticleExpandTimer += Time.deltaTime;
-
-                expandAlpha = Remap(reticleExpandTimer, 0, reticleExpandTime, 0, 1);
-
-                reticle.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector3(0, Mathf.Lerp(10, 15, expandAlpha), 0);
-                reticle.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector3(0, Mathf.Lerp(-10, -15, expandAlpha), 0);
-                reticle.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(10, 15, expandAlpha), 0, 0);
-                reticle.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(-10, -15, expandAlpha), 0, 0);
-
-                if (reticleExpandTimer >= reticleExpandTime)
+                if (expandAlpha < 1)
                 {
-                    isReticleExpanding = false;
-                    reticleExpandTimer = 0;
+                    reticleExpandTimer += Time.deltaTime;
+
+                    expandAlpha = Remap(reticleExpandTimer, 0, reticleExpandTime,  0, 1);
+
+                    reticle.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector3(0, Mathf.Lerp(10, 15, expandAlpha), 0);
+                    reticle.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector3(0, Mathf.Lerp(-10, -15, expandAlpha), 0);
+                    reticle.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(10, 15, expandAlpha), 0, 0);
+                    reticle.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(-10, -15, expandAlpha), 0, 0);
+                }
+
+                if (expandAlpha > 1)
+                {
+                    if(!isReticleLooping)
+                    {
+                        reticleExpandTimer = 0;
+                        isReticleExpanding = false;
+                    }
                 }
             }
         }
