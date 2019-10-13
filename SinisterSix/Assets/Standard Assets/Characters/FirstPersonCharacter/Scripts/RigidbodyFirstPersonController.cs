@@ -23,6 +23,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             [HideInInspector] public float CurrentTargetSpeed = 8f;
             public float Stamina = 1;
             public float MaxStamina = 1;
+            public float Health = 1;
+            public float MaxHelth = 1;
 
 
 #if !MOBILE_INPUT
