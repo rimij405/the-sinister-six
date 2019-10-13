@@ -285,6 +285,10 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     CurrentTargetSpeed: 8
+    Stamina: 1
+    MaxStamina: 1
+    Health: 1
+    MaxHelth: 1
   mouseLook:
     XSensitivity: 2
     YSensitivity: 2
@@ -300,3 +304,4 @@ MonoBehaviour:
     slowDownRate: 20
     airControl: 0
     shellOffset: 0
+  player: {fileID: 0}
