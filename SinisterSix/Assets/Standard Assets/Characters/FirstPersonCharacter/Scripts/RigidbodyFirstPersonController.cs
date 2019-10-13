@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Characters.ThirdPerson;
+using System.Collections;
 
 namespace UnityStandardAssets.Characters.FirstPerson
 {
@@ -95,7 +96,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private Vector3 m_GroundContactNormal;
         private bool m_Jump, m_PreviouslyGrounded, m_Jumping, m_IsGrounded;
         public GameObject player;
-
+        public GameObject reticle;
+        public bool isReticleShrinking;
+        public bool isReticleExpanding;
+        public float reticleShrinkTime = 0.3f;
+        public float reticleExpandTime = 0.5f;
+        private float reticleShrinkTimer = 0.0f;
+        private float reticleExpandTimer = 0.0f;
+        public float expandAlpha;
+        public float shrinkAlpha;
 
         public Vector3 Velocity
         {
@@ -124,22 +133,39 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
         }
 
-        public void Bind()
+        private void Bind()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (!Physics.Raycast(ray, out hit))
+            if (!Physics.Raycast(ray, out RaycastHit hit))
             {
                 return;
             }
             else
             {
-                if (hit.transform.gameObject.tag == "Enemy")
+                if (hit.transform.gameObject.tag == "Enemy" && !hit.transform.gameObject.GetComponent<AICharacterControl>().isBound)
                 {
+
+
                     hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
                     hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
+                    hit.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
+                    hit.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
+
+
+                    hit.transform.GetChild(1).GetComponent<ParticleSystem>().Play();
+                    hit.transform.GetChild(2).GetComponent<ParticleSystem>().Play();
+
+                    //wait for chains
+                    StartCoroutine(Example(hit.transform.GetChild(3), hit.transform.GetChild(4)));
                 }
             }
+        }
+
+        IEnumerator Example(Transform child3, Transform child4)
+        {
+            yield return new WaitForSeconds(.15f);
+            child3.GetComponent<ParticleSystem>().Play();
+            child4.GetComponent<ParticleSystem>().Play();
         }
 
         private void Start()
@@ -149,13 +175,15 @@ namespace UnityStandardAssets.Characters.FirstPerson
             mouseLook.Init (transform, cam.transform);
 
             player = GameObject.Find("Player");
+            reticle = GameObject.Find("Reticle");
         }
 
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
+                isReticleShrinking = true;
                 Bind();
             }
 
@@ -166,9 +194,48 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 m_Jump = true;
             }
 
-            if (Input.GetKeyDown(KeyCode.Mouse0));
+            if(isReticleShrinking)
+            {
+                reticleShrinkTimer += Time.deltaTime;
+
+                shrinkAlpha = Remap(reticleShrinkTimer, 0, reticleShrinkTime, 0, 1);
+
+                reticle.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector3(0, Mathf.Lerp(15, 10, shrinkAlpha), 0 );
+                reticle.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector3(0, Mathf.Lerp(-15, -10, shrinkAlpha), 0);
+                reticle.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(15, 10, shrinkAlpha), 0, 0);
+                reticle.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(-15, -10, shrinkAlpha), 0, 0);
+
+                if(reticleShrinkTimer >= 1)
+                {
+                    isReticleShrinking = false;
+                    isReticleExpanding = true;
+                    reticleShrinkTimer = 0;
+                }
+            }
+
+            if (isReticleExpanding)
+            {
+                reticleExpandTimer += Time.deltaTime;
+
+                expandAlpha = Remap(reticleExpandTimer, 0, reticleExpandTime, 0, 1);
+
+                reticle.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector3(0, Mathf.Lerp(10, 15, expandAlpha), 0);
+                reticle.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector3(0, Mathf.Lerp(-10, -15, expandAlpha), 0);
+                reticle.transform.GetChild(2).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(10, 15, expandAlpha), 0, 0);
+                reticle.transform.GetChild(3).GetComponent<RectTransform>().anchoredPosition = new Vector3(Mathf.Lerp(-10, -15, expandAlpha), 0, 0);
+
+                if (reticleExpandTimer >= reticleExpandTime)
+                {
+                    isReticleExpanding = false;
+                    reticleExpandTimer = 0;
+                }
+            }
         }
 
+        private float Remap(float value, float from1, float to1, float from2, float to2)
+        {
+            return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+        }
 
         private void FixedUpdate()
         {
@@ -244,9 +311,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void StickToGroundHelper()
         {
-            RaycastHit hitInfo;
-            if (Physics.SphereCast(transform.position, m_Capsule.radius * (1.0f - advancedSettings.shellOffset), Vector3.down, out hitInfo,
-                                   ((m_Capsule.height/2f) - m_Capsule.radius) +
+            if (Physics.SphereCast(transform.position, m_Capsule.radius * (1.0f - advancedSettings.shellOffset), Vector3.down, out RaycastHit hitInfo,
+                                   ((m_Capsule.height / 2f) - m_Capsule.radius) +
                                    advancedSettings.stickToGroundHelperDistance, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             {
                 if (Mathf.Abs(Vector3.Angle(hitInfo.normal, Vector3.up)) < 85f)
@@ -292,9 +358,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private void GroundCheck()
         {
             m_PreviouslyGrounded = m_IsGrounded;
-            RaycastHit hitInfo;
-            if (Physics.SphereCast(transform.position, m_Capsule.radius * (1.0f - advancedSettings.shellOffset), Vector3.down, out hitInfo,
-                                   ((m_Capsule.height/2f) - m_Capsule.radius) + advancedSettings.groundCheckDistance, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+            if (Physics.SphereCast(transform.position, m_Capsule.radius * (1.0f - advancedSettings.shellOffset), Vector3.down, out RaycastHit hitInfo,
+                                   ((m_Capsule.height / 2f) - m_Capsule.radius) + advancedSettings.groundCheckDistance, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             {
                 m_IsGrounded = true;
                 m_GroundContactNormal = hitInfo.normal;

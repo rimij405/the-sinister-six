@@ -17,16 +17,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private float timer;
 
         public bool isBound;
-        private float boundTimer;
         public float boundTime;
-
-        // Use this for initialization
-        void OnEnable()
-        {
-            timer = wanderTime;
-            boundTimer = boundTime;
-        }
-
+        private float boundTimer;
 
         private void Start()
         {
@@ -36,6 +28,14 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 	        agent.updateRotation = false;
 	        agent.updatePosition = true;
+
+            //set material atribytes
+            character.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", 0.0f);
+            character.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 0.0f);
+
+            //set timers
+            timer = wanderTime;
+            boundTimer = 0;
         }
 
 
@@ -62,9 +62,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
                 if (boundTimer >= boundTime)
                 {
-                    agent.isStopped = false;
                     isBound = false;
-                    boundTime = 0;
+                    character.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", 0.0f);
+                    character.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 0.0f);
+                    boundTimer = 0;
                 }
             }
 
