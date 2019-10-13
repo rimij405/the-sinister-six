@@ -119,7 +119,7 @@ NavMeshSettings:
     accuratePlacement: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 3dc5d907a44ee3047a07a3af608b7f6a, type: 2}
 --- !u!1001 &563641051
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -127,6 +127,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3689491736377400678, guid: 75171080f151f694f907b9661f580de1,
+        type: 3}
+      propertyPath: m_Name
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 8449099866747238951, guid: 75171080f151f694f907b9661f580de1,
         type: 3}
       propertyPath: onDamage.m_PersistentCalls.m_Calls.Array.size
@@ -163,15 +172,6 @@ PrefabInstance:
         type: 3}
       propertyPath: onDamage.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
-    - target: {fileID: 0}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3689491736377400678, guid: 75171080f151f694f907b9661f580de1,
-        type: 3}
-      propertyPath: m_Name
-      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 3689491736377426242, guid: 75171080f151f694f907b9661f580de1,
         type: 3}
@@ -267,7 +267,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!64 &865669186
 MeshCollider:
@@ -350,6 +350,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6661005232264286992, guid: a94b44a8167994249a104e71a7893d55,
+        type: 3}
+      propertyPath: m_Name
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 5657384498052407914, guid: a94b44a8167994249a104e71a7893d55,
         type: 3}
       propertyPath: onTargetCollision.m_PersistentCalls.m_Calls.Array.size
@@ -369,11 +374,6 @@ PrefabInstance:
         type: 3}
       propertyPath: onTargetCollision.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6661005232264286992, guid: a94b44a8167994249a104e71a7893d55,
-        type: 3}
-      propertyPath: m_Name
-      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 6661005232264609898, guid: a94b44a8167994249a104e71a7893d55,
         type: 3}
