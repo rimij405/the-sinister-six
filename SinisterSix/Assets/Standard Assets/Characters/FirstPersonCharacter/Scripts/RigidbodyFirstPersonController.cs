@@ -174,15 +174,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else
             {
-                if (hit.transform.gameObject.tag == "Spawner" && !hit.transform.gameObject.GetComponent<SpawnEnemies>())
+                if (hit.transform.gameObject.tag == "Spawner" && hit.transform.gameObject.GetComponent<Drain>().isCorrupted && !hit.transform.gameObject.GetComponent<Drain>().isBeingDrained)
                 {
-                    hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
-                    hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
-
-                    hit.transform.GetChild(1).GetComponent<ParticleSystem>().Play();
-
-                    //wait for chains
-                    StartCoroutine(Example(hit.transform.GetChild(0), hit.transform.GetChild(2), hit.transform.GetChild(3), hit.transform.GetChild(4)));
+                    hit.transform.gameObject.GetComponent<Drain>().isBeingDrained = true;
                 }
             }
         }

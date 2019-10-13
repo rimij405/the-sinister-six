@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnEnemies : MonoBehaviour
+public class Drain : MonoBehaviour
 {
     public GameObject child;
     public GameObject EnemyRef;
@@ -27,7 +27,7 @@ public class SpawnEnemies : MonoBehaviour
                 corruptionLevel -= 0.1f;
             }
 
-            if(!isBeingDrained && corruptionLevel < 1)
+            if (!isBeingDrained && corruptionLevel < 1)
             {
                 corruptionLevel += 0.1f;
             }
