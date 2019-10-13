@@ -144,28 +144,47 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 if (hit.transform.gameObject.tag == "Enemy" && !hit.transform.gameObject.GetComponent<AICharacterControl>().isBound)
                 {
-
-
                     hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
                     hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
-                    hit.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
-                    hit.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
-
 
                     hit.transform.GetChild(1).GetComponent<ParticleSystem>().Play();
-                    hit.transform.GetChild(2).GetComponent<ParticleSystem>().Play();
 
                     //wait for chains
-                    StartCoroutine(Example(hit.transform.GetChild(3), hit.transform.GetChild(4)));
+                    StartCoroutine(Example(hit.transform.GetChild(0), hit.transform.GetChild(2), hit.transform.GetChild(3), hit.transform.GetChild(4)));
                 }
             }
         }
 
-        IEnumerator Example(Transform child3, Transform child4)
+        IEnumerator Example(Transform child0, Transform child2, Transform child3, Transform child4)
         {
-            yield return new WaitForSeconds(.15f);
+            yield return new WaitForSeconds(.1f);
+            child0.GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
+            child0.GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
+            child2.GetComponent<ParticleSystem>().Play();
             child3.GetComponent<ParticleSystem>().Play();
             child4.GetComponent<ParticleSystem>().Play();
+        }
+
+        private void Drain()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (!Physics.Raycast(ray, out RaycastHit hit))
+            {
+                return;
+            }
+            else
+            {
+                if (hit.transform.gameObject.tag == "Spawner" && !hit.transform.gameObject.GetComponent<SpawnEnemies>())
+                {
+                    hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
+                    hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
+
+                    hit.transform.GetChild(1).GetComponent<ParticleSystem>().Play();
+
+                    //wait for chains
+                    StartCoroutine(Example(hit.transform.GetChild(0), hit.transform.GetChild(2), hit.transform.GetChild(3), hit.transform.GetChild(4)));
+                }
+            }
         }
 
         private void Start()
