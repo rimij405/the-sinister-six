@@ -165,6 +165,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
             child4.GetComponent<ParticleSystem>().Play();
         }
 
+        IEnumerator Example2(Transform child0, Transform child2, Transform child3, Transform child4)
+        {
+            yield return new WaitForSeconds(.1f);
+            child0.GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
+            child0.GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
+            child2.GetComponent<ParticleSystem>().Play();
+            child3.GetComponent<ParticleSystem>().Play();
+            child4.GetComponent<ParticleSystem>().Play();
+        }
+
         private void Drain()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -174,9 +184,18 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else
             {
-                if (hit.transform.gameObject.tag == "Spawner" && hit.transform.gameObject.GetComponent<Drain>().isCorrupted && !hit.transform.gameObject.GetComponent<Drain>().isBeingDrained)
+                if (hit.transform.gameObject.tag == "Spawner" && Input.GetKey(KeyCode.Mouse0))
                 {
-                    hit.transform.gameObject.GetComponent<Drain>().isBeingDrained = true;
+                    if (hit.transform.gameObject.GetComponent<Drain>().isCorrupted && !hit.transform.gameObject.GetComponent<Drain>().isBeingDrained)
+                    {
+                    
+                        hit.transform.gameObject.GetComponent<Drain>().isBeingDrained = true;
+                    
+                    }
+                }
+                else
+                {
+                    hit.transform.gameObject.GetComponent<Drain>().isBeingDrained = false;
                 }
             }
         }
@@ -194,10 +213,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
+            if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 isReticleShrinking = true;
                 Bind();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                isReticleShrinking = true;
+                Drain();
             }
 
             RotateView();
