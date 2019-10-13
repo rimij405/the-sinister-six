@@ -163,7 +163,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         IEnumerator Example(Transform child3, Transform child4)
         {
-            yield return new WaitForSeconds(.15f);
+            yield return new WaitForSeconds(.2f);
             child3.GetComponent<ParticleSystem>().Play();
             child4.GetComponent<ParticleSystem>().Play();
         }

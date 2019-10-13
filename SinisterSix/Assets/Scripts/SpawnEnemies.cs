@@ -20,7 +20,17 @@ public class SpawnEnemies : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (isBeingDrained)
+        {
+
+        }
+        else
+        {
+            if(corruptionLevel != 0)
+            {
+
+            }
+        }
         if (corruptionLevel == 0)
         {
             isCorrupted = false;
