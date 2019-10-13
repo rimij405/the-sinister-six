@@ -95,7 +95,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_YRotation;
         private Vector3 m_GroundContactNormal;
         private bool m_Jump, m_PreviouslyGrounded, m_Jumping, m_IsGrounded;
-        public GameObject player;
         public GameObject reticle;
         public bool isReticleShrinking;
         public bool isReticleExpanding;
@@ -240,7 +239,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_Capsule = GetComponent<CapsuleCollider>();
             mouseLook.Init (transform, cam.transform);
 
-            player = GameObject.Find("Player");
             reticle = GameObject.Find("Reticle");
         }
 
@@ -252,7 +250,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 isReticleShrinking = true;
                 Bind();
             }
-
 
             Drain();
 
@@ -276,13 +273,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
                 if(shrinkAlpha > 1)
                 {
+                    shrinkAlpha = 0;
                     isReticleShrinking = false;
                     isReticleExpanding = true;
                     reticleShrinkTimer = 0;
                 }
             }
 
-            if (isReticleExpanding && isExpandOk)
+            if (isReticleExpanding && isExpandOk && shrinkAlpha == 0)
             {
                 if (expandAlpha < 1)
                 {
@@ -300,6 +298,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 {
                     if(!isReticleLooping)
                     {
+                        expandAlpha = 0;
                         reticleExpandTimer = 0;
                         isReticleExpanding = false;
                     }

@@ -91,6 +91,11 @@ public class ViewCone : MonoBehaviour
     /// </summary>
     public bool TargetExists => (this.target != null);
 
+    /// <summary>
+    /// Return the player or find if null.
+    /// </summary>
+    private GameObject Target => (this.target = this.target ?? GameObject.FindGameObjectWithTag("Player"));
+
     // Start is called before the first frame update.
     void Start()
     {
@@ -112,6 +117,9 @@ public class ViewCone : MonoBehaviour
         // First frame update.
         this.UpdateGizmoColor();
         this.UpdateColliderRadius();
+
+        // Load the target.
+        this.target = this.Target;
     }
 
     // Update is called once per frame
@@ -144,7 +152,7 @@ public class ViewCone : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         // Check target against collider.
-        if (!this.TargetExists || other.gameObject != this.target)
+        if (!this.TargetExists || other.gameObject != this.Target)
         {
             // Do nothing if not the appropriate target.
             Debug.Log("Trigger activated by non-targeted game object.");
@@ -184,7 +192,7 @@ public class ViewCone : MonoBehaviour
         }
 
         // Does the target exist? If not, nothing to find.
-        if (!this.TargetExists || other.gameObject != this.target)
+        if (!this.TargetExists || other.gameObject != this.Target)
         {
             // Do nothing, because no target exists.
             Debug.Log("OnTriggerStay: No target exists.");
@@ -216,7 +224,7 @@ public class ViewCone : MonoBehaviour
     /// <param name="other">Other collider.</param>
     public void OnTriggerExit(Collider other)
     {
-        if (this.targetSeen && this.TargetExists && other.gameObject == this.target)
+        if (this.targetSeen && this.TargetExists && other.gameObject == this.Target)
         {
             Debug.Log("Trigger exited by the target.");
             this.onTargetLost.Invoke();
@@ -231,7 +239,7 @@ public class ViewCone : MonoBehaviour
         {
             // Measure the angles.
             float halfFOV = this.fieldOfView * 0.5f;
-            Vector3 targetRay = this.target.transform.position - this.transform.position;
+            Vector3 targetRay = this.Target.transform.position - this.transform.position;
             float targetAngle = Vector3.Angle(targetRay, this.transform.forward);
 
             // Check if it's in range and in angle.
@@ -241,7 +249,7 @@ public class ViewCone : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(this.transform.position, targetRay.normalized, out hit, this.Collider.radius * 2.0f))
                 {
-                    if (hit.collider.gameObject == this.target)
+                    if (hit.collider.gameObject == this.Target)
                     {
                         Debug.Log("Target hit by raycast.");
                         return true;
@@ -272,7 +280,7 @@ public class ViewCone : MonoBehaviour
 
         // Measure the angles.
         float halfFOV = this.fieldOfView * 0.5f;
-        Vector3 targetRay = this.target.transform.position - this.transform.position;
+        Vector3 targetRay = this.Target.transform.position - this.transform.position;
         float targetAngle = Vector3.Angle(targetRay, this.transform.forward);
 
         // Direction rays.
@@ -294,8 +302,20 @@ public class ViewCone : MonoBehaviour
 
         // Draw target ray and target sphere.
         Gizmos.DrawRay(this.transform.position, targetRay);
-        Gizmos.DrawWireSphere(this.target.transform.position, 0.5f);
+        Gizmos.DrawWireSphere(this.Target.transform.position, 0.5f);
 
+    }
+
+    /// <summary>
+    /// Target to assign.
+    /// </summary>
+    /// <param name="target"></param>
+    public void SetTarget(GameObject target)
+    {
+        if (target != null)
+        {
+            this.target = target;
+        }
     }
 
 }

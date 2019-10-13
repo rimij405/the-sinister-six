@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6498342796299862233}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -139,7 +139,6 @@ MonoBehaviour:
     slowDownRate: 20
     airControl: 0
     shellOffset: 0
-  player: {fileID: 0}
   reticle: {fileID: 0}
   isReticleShrinking: 0
   isReticleExpanding: 0
@@ -147,6 +146,10 @@ MonoBehaviour:
   reticleExpandTime: 0.12
   expandAlpha: 0
   shrinkAlpha: 0
+  isDraining: 0
+  lastSpawner: {fileID: 0}
+  isExpandOk: 1
+  isReticleLooping: 0
 --- !u!1 &4290662211355313026
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,16 +568,16 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.86757
       objectReference: {fileID: 0}
-    - target: {fileID: 7262490132853815571, guid: 0262ab36375825d43bb5b722e39d8cdf,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 37ffdf67a5df36a4fb1f315697042547, type: 2}
     - target: {fileID: 8673756019196357828, guid: 0262ab36375825d43bb5b722e39d8cdf,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: e4c830f21634c844e942cd69927c9fdb, type: 2}
+    - target: {fileID: 7262490132853815571, guid: 0262ab36375825d43bb5b722e39d8cdf,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 37ffdf67a5df36a4fb1f315697042547, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0262ab36375825d43bb5b722e39d8cdf, type: 3}
 --- !u!4 &1200685367350155004 stripped

@@ -9,11 +9,12 @@ public class Drain : MonoBehaviour
     public float corruptionLevel;
     public bool isCorrupted;
     public bool isBeingDrained;
+    public float alpha = 0;
 
     // Start is called before the first frame update
     void Start()
     {
-        child = Instantiate(EnemyRef, transform.parent, true);
+        child = Instantiate(EnemyRef, new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z), Quaternion.identity);
         corruptionLevel = 2;
         isCorrupted = true;
     }
@@ -36,7 +37,15 @@ public class Drain : MonoBehaviour
             if (corruptionLevel < 0)
             {
                 isCorrupted = false;
-                Debug.Log("Object purified");
+                child.transform.GetChild(0).GetComponent<Renderer>().material.SetInt("_IsDissolve", 0);
+            }
+        }
+        else
+        {
+            if (alpha < 1)
+            {
+                alpha += 0.01f;
+                child.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_DissolveAmount", Mathf.Lerp(-1, 2, alpha));
             }
         }
     }
