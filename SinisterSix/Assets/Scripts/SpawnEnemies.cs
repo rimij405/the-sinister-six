@@ -35,6 +35,7 @@ public class SpawnEnemies : MonoBehaviour
             if (corruptionLevel == 0)
             {
                 isCorrupted = false;
+                Debug.Log("Object purified");
             }
         }
     }
