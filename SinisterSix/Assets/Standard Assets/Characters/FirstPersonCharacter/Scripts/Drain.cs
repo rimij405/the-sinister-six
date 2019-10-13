@@ -13,8 +13,9 @@ public class Drain : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        child = Instantiate(EnemyRef, transform, true);
-        corruptionLevel = 1;
+        child = Instantiate(EnemyRef, transform.parent, true);
+        corruptionLevel = 2;
+        isCorrupted = true;
     }
 
     // Update is called once per frame
@@ -24,15 +25,15 @@ public class Drain : MonoBehaviour
         {
             if (isBeingDrained && corruptionLevel > 0)
             {
-                corruptionLevel -= 0.1f;
+                corruptionLevel -= 0.03f;
             }
 
             if (!isBeingDrained && corruptionLevel < 1)
             {
-                corruptionLevel += 0.1f;
+                corruptionLevel += 0.03f;
             }
 
-            if (corruptionLevel == 0)
+            if (corruptionLevel < 0)
             {
                 isCorrupted = false;
                 Debug.Log("Object purified");

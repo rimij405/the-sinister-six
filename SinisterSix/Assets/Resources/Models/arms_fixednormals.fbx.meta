@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 12cb8eb37afca7444a81083026a14af4
+guid: 0d73b5841be21854184251ac9b02624b
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable: []
@@ -34,7 +34,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 0.5
+    globalScale: 10
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -81,13 +81,13 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.5
+    globalScale: 0.099999994
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
