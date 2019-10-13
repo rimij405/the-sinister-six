@@ -121,10 +121,10 @@ public class BGMPlayer : MonoBehaviour
         }
     }
 
-        /// <summary>
-        /// Stop all tracks.
-        /// </summary>
-        public void StopAllTracks()
+    /// <summary>
+    /// Stop all tracks.
+    /// </summary>
+    public void StopAllTracks()
     {
         foreach (Audio audio in this._audioCache)
         {
@@ -189,6 +189,18 @@ public class BGMPlayer : MonoBehaviour
 
             // Start transition.
             this.StartFadeIn();
+        }
+    }
+
+    /// <summary>
+    /// If the player is in the volume and it hasn't started, play.
+    /// </summary>
+    /// <param name="other"></param>
+    public void OnTriggerStay(Collider other)
+    {
+        if(other.gameObject == this.player && this.fadeState != 1.0f)
+        {
+            this.OnTriggerEnter(other);
         }
     }
 

@@ -65,7 +65,7 @@ namespace Hellmade.Sound
             {
                 if (instance == null)
                 {
-                    instance = (EazySoundManager)FindObjectOfType(typeof(EazySoundManager));
+                    // instance = (EazySoundManager)FindObjectOfType(typeof(EazySoundManager));
                     if (instance == null)
                     {
                         // Create gameObject and add component
