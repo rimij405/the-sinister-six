@@ -17,15 +17,13 @@ public class Interface : MonoBehaviour
         
     }
 
-    public void TurnOnChase()
+    public void StartChasing()
     {
         GetComponentInParent<AICharacterControl>().IsChasing = true;
-        Debug.Log("CHASE STARTED");
     }
 
-    public void TurnOffChase()
+    public void StopChasing()
     {
         GetComponentInParent<AICharacterControl>().IsChasing = false;
-        Debug.Log("CHASE ENDED");
     }
 }
