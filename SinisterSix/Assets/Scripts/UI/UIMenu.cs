@@ -18,6 +18,6 @@ public class UIMenu : MonoBehaviour
 
     public void ResetLevel()
     {
-        SceneManager.LoadScene(Application.loadedLevel);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
