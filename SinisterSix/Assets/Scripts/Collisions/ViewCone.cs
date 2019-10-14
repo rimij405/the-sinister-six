@@ -280,7 +280,7 @@ public class ViewCone : MonoBehaviour
 
         // Measure the angles.
         float halfFOV = this.fieldOfView * 0.5f;
-        Vector3 targetRay = this.Target.transform.position - this.transform.position;
+        Vector3 targetRay = (this.Target != null) ? this.Target.transform.position - this.transform.position : Vector3.zero;
         float targetAngle = Vector3.Angle(targetRay, this.transform.forward);
 
         // Direction rays.
@@ -292,17 +292,17 @@ public class ViewCone : MonoBehaviour
         Gizmos.DrawRay(this.transform.position, forwardRay);
         Gizmos.DrawRay(this.transform.position, leftRay);
         Gizmos.DrawRay(this.transform.position, rightRay);
-
+        
         // Check if the target is within the range and angles.
-        bool isInRange = (targetRay.magnitude < this.Collider.radius * 0.5f);
-        bool isInAngle = (targetAngle < halfFOV);
+        bool isInRange = (this.Target != null) && (targetRay.magnitude < this.Collider.radius * 0.5f);
+        bool isInAngle = (this.Target != null) && (targetAngle < halfFOV);
 
         // Change ray color if target is within angles.
         Gizmos.color = (isInRange && isInAngle) ? Color.cyan : this.gizmoColor;
 
         // Draw target ray and target sphere.
         Gizmos.DrawRay(this.transform.position, targetRay);
-        Gizmos.DrawWireSphere(this.Target.transform.position, 0.5f);
+        Gizmos.DrawWireSphere((this.Target != null) ? this.Target.transform.position : Vector3.zero, (this.Target != null) ? 0.5f : 0.0f);
 
     }
 
