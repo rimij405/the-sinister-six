@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityStandardAssets.Characters.ThirdPerson;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 namespace UnityStandardAssets.Characters.FirstPerson
 {
@@ -88,8 +89,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public MovementSettings movementSettings = new MovementSettings();
         public MouseLook mouseLook = new MouseLook();
         public AdvancedSettings advancedSettings = new AdvancedSettings();
-
-
+        
         private Rigidbody m_RigidBody;
         private CapsuleCollider m_Capsule;
         private float m_YRotation;
@@ -152,12 +152,17 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     animatorR.Play("Snap");
                     hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
                     hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
-                    Debug.Log(transform.GetChild(2).transform.GetChild(0).name);           
+                    // Debug.Log(transform.GetChild(2).transform.GetChild(0).name);           
 
                     //wait for chains
                     StartCoroutine(Example(hit.transform.GetChild(0), hit.transform.GetChild(1), hit.transform.GetChild(2), hit.transform.GetChild(3), hit.transform.GetChild(4), animatorR));
                 }
             }
+        }
+
+        public void EndGame()
+        {
+            SceneManager.LoadScene("End");
         }
 
         IEnumerator Example(Transform child0, Transform child1, Transform child2, Transform child3, Transform child4, Animator anim)
@@ -259,9 +264,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             mouseLook.Init (transform, cam.transform);
 
             reticle = GameObject.Find("Reticle");
-
-            animatorR = transform.GetChild(2).transform.GetChild(0).GetComponent<Animator>();
-            animatorL = transform.GetChild(2).transform.GetChild(1).GetComponent<Animator>();
         }
 
 

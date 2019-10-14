@@ -25,6 +25,23 @@ public class DamageOnCollision : MonoBehaviour
     /// </summary>
     public float damage = 100;
 
+    public void Awake()
+    {
+        this.SetTarget(GameObject.FindGameObjectWithTag("Player"));
+    }
+
+    public void SetTarget(GameObject _target)
+    {
+        if(_target != null)
+        {
+            DamageOnCollisionTarget component = _target.GetComponent<DamageOnCollisionTarget>();
+            if (component)
+            {
+                target = component;
+            }
+        }
+    }
+
     /// <summary>
     /// On trigger enter, attempt to damage the target.
     /// </summary>
