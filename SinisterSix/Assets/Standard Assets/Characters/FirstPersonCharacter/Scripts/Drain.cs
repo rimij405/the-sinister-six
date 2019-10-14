@@ -64,7 +64,7 @@ public class Drain : MonoBehaviour
 
         if (alpha > 1)
         {
-            Destroy(child, 1.0f);
+            Destroy(child, 0.5f);
         }
     }
 }
