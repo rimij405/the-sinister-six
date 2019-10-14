@@ -251,20 +251,20 @@ public class ViewCone : MonoBehaviour
                 {
                     if (hit.collider.gameObject == this.Target)
                     {
-                        Debug.Log("Target hit by raycast.");
+                        //Debug.Log("Target hit by raycast.");
                         return true;
                     }
                     else
                     {
-                        Debug.Log("Non-target hit by raycast.");
+                        //Debug.Log("Non-target hit by raycast.");
                     }
                 }
                 else
                 {
-                    Debug.Log("Nothing hit by raycast.");
+                    //Debug.Log("Nothing hit by raycast.");
                 }
             }
-            Debug.Log("Target is not in view.");
+            //Debug.Log("Target is not in view.");
             return false;
         }
 

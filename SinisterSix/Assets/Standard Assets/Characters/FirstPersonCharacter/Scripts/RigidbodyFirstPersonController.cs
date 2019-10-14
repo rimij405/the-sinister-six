@@ -108,7 +108,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public Drain lastSpawner;
         public bool isExpandOk = true;
         public bool isReticleLooping = false;
-        public Animation animation;
+        public Animator animator;
 
         public Vector3 Velocity
         {
@@ -137,7 +137,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
         }
 
-        private void Bind()
+        public void Bind()
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (!Physics.Raycast(ray, out RaycastHit hit))
@@ -150,9 +150,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 {
                     hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
                     hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
-
-                    Animator animator = transform.GetChild(3).transform.GetChild(0).GetComponent<Animator>();
-                    animator.SetBool("IsSnap", true);
+                    Debug.Log(transform.GetChild(2).transform.GetChild(0).name);           
 
                     //wait for chains
                     StartCoroutine(Example(hit.transform.GetChild(0), hit.transform.GetChild(1), hit.transform.GetChild(2), hit.transform.GetChild(3), hit.transform.GetChild(4), animator));
@@ -162,7 +160,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         IEnumerator Example(Transform child0, Transform child1, Transform child2, Transform child3, Transform child4, Animator anim)
         {
-            yield return new WaitForSeconds(.2f);
+            yield return new WaitForSeconds(0.7f);
             child1.GetComponent<ParticleSystem>().Play();
             yield return new WaitForSeconds(.1f);
             child0.GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
@@ -170,8 +168,6 @@ namespace UnityStandardAssets.Characters.FirstPerson
             child2.GetComponent<ParticleSystem>().Play();
             child3.GetComponent<ParticleSystem>().Play();
             child4.GetComponent<ParticleSystem>().Play();
-
-            yield return new WaitForSeconds(.5f);
             anim.SetBool("IsSnap", false);
 
         }
@@ -248,6 +244,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
             mouseLook.Init (transform, cam.transform);
 
             reticle = GameObject.Find("Reticle");
+
+            animator = transform.GetChild(2).transform.GetChild(0).GetComponent<Animator>();
         }
 
 
@@ -256,7 +254,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 isReticleShrinking = true;
-                Bind();
+                animator.SetBool("IsSnap", true);
             }
 
             Drain();
