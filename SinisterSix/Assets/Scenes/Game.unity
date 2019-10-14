@@ -138,9 +138,6 @@ MonoBehaviour:
   m_Script: {fileID: 1094443370}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FocusTracksTarget: 0
-  m_FocusOffset: 0
-  m_Profile: {fileID: 11400000, guid: fe929453f24745d438862aee917c2f15, type: 2}
 --- !u!114 &82295599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1146,15 +1143,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 221642016}
     m_Modifications:
-    - target: {fileID: 3647641037935712605, guid: c7e050bcdb238d043a5a27d77642599b,
-        type: 3}
-      propertyPath: isGlobal
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 01cda123a95d1c942a2f6b67512b298e, type: 2}
+    - target: {fileID: 3606465620116066531, guid: c7e050bcdb238d043a5a27d77642599b,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5391858076048017964, guid: c7e050bcdb238d043a5a27d77642599b,
         type: 3}
       propertyPath: m_Intensity
