@@ -16,83 +16,77 @@ public class FloatingEffect : MonoBehaviour
     [SerializeField]
     private GameObject _target = null;
 
+    [Header("Oscilliation Settings")]
+
     /// <summary>
     /// Local offset to apply.
     /// </summary>
-    public Vector3 localOffset = Vector3.zero;
-    
-    [Header("Sine Animation Curves")]
+    public Vector3 oscillationOffset = Vector3.zero;
 
     /// <summary>
-    /// Sine multiplier to weight.
+    /// Maximum distance.
     /// </summary>
     [Slider(0.0f, 1.0f)]
-    public float sinMultiplier = 1.0f;
-    public AnimationCurve xSinWeight;
-    public AnimationCurve ySinWeight;
-    public AnimationCurve zSinWeight;
-
-    [Header("Cosine Animation Curves")]
+    public float maxDistance = 1.0f;
 
     /// <summary>
-    /// Cosine multiplier to weight.
+    /// Oscilliation weight.
     /// </summary>
     [Slider(0.0f, 1.0f)]
-    public float cosMultiplier = 1.0f;
-    public AnimationCurve xCosWeight;
-    public AnimationCurve yCosWeight;
-    public AnimationCurve zCosWeight;
+    public float weight = 0.5f;
+
+    /// <summary>
+    /// Period.
+    /// </summary>
+    public float period = 0.0f;
+
+    [Slider(0.0f, 10.0f)]
+    public float duration = 1.0f;
+
+    private bool flip = false;
+
+    [Header("Weighted Animation Curves")]
+
+    public AnimationCurve xWeight = AnimationCurve.Constant(0.0f, 1.0f, 1.0f);
+    public AnimationCurve yWeight = AnimationCurve.Constant(0.0f, 1.0f, 1.0f);
+    public AnimationCurve zWeight = AnimationCurve.Constant(0.0f, 1.0f, 1.0f);
 
     /// <summary>
     /// Fixed update will move target.
     /// </summary>
     public void FixedUpdate()
     {
-        if (sinMultiplier > 0.0f)
+        this.StartCoroutine(BounceTime());
+        if(_target != null)
         {
-            this._target.transform.localPosition += this.EvaluateSine(Time.time);
-        }
-
-        if (cosMultiplier > 0.0f)
-        {
-            this._target.transform.localPosition += this.EvaluateCosine(Time.time);
+            this._target.transform.localPosition = oscillationOffset + this.EvaluateSine(Time.time * weight);
         }
     }
 
-    /// <summary>
-    /// Calculate the sine at given time 't'.
-    /// </summary>
-    /// <returns></returns>
-    public Vector3 EvaluateSine(float t) =>
-        new Vector3(
-            this.GetSine(this.xSinWeight.Evaluate(t)),
-            this.GetSine(this.ySinWeight.Evaluate(t)),
-            this.GetSine(this.zSinWeight.Evaluate(t))            
-            ) * this.sinMultiplier;
+    public IEnumerator BounceTime()
+    {
+        while (true)
+        {
+            period += (flip) ? Time.deltaTime : -Time.deltaTime;
+            if(Mathf.Abs(period) >= duration)
+            {
+                flip = !flip;
+            }
+            yield return null;
+        }
+
+    }
 
     /// <summary>
-    /// Calculate the cosine at given time 't'.
+    /// Evaluate the sine for all dimensions at given time T.
     /// </summary>
-    public Vector3 EvaluateCosine(float t) =>
-        new Vector3(
-            this.GetCosine(this.xCosWeight.Evaluate(t)),
-            this.GetCosine(this.yCosWeight.Evaluate(t)),
-            this.GetCosine(this.zCosWeight.Evaluate(t))
-            ) * this.cosMultiplier;    
-       
-    /// <summary>
-    /// Return cosine value for given theta.
-    /// </summary>
-    /// <param name="theta"></param>
+    /// <param name="t"></param>
     /// <returns></returns>
-    private float GetCosine(float theta) => Mathf.Cos(theta);
-
-    /// <summary>
-    /// Return sine value for given theta.
-    /// </summary>
-    /// <param name="theta"></param>
-    /// <returns></returns>
-    private float GetSine(float theta) => Mathf.Sin(theta);
+    public Vector3 EvaluateSine(float t) => new Vector3(
+        Mathf.Sin(t) * maxDistance * xWeight.Evaluate(period),
+        Mathf.Sin(t) * maxDistance * yWeight.Evaluate(period),
+        Mathf.Sin(t) * maxDistance * zWeight.Evaluate(period)        
+        );
 
 
 
