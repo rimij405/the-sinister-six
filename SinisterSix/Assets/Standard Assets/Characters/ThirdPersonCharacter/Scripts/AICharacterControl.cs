@@ -20,6 +20,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public float boundTime;
         private float boundTimer;
 
+        public GameObject player;
+
+        public bool IsChasing = false;
+
         private void Start()
         {
             // get the components on the object we need ( should not be null due to require component so no need to check )
@@ -36,6 +40,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             //set timers
             timer = wanderTime;
             boundTimer = 0;
+
+            player = GameObject.Find("Player");
         }
 
 
@@ -69,17 +75,26 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 }
             }
 
-            //new wander pos cooldown
-            if (timer >= wanderTime && !isBound)
+            if (!IsChasing)
             {
-                Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
+                //new wander pos cooldown
+                if (timer >= wanderTime && !isBound)
+                {
+                    Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
 
-                agent.SetDestination(newPos);
+                    agent.SetDestination(newPos);
 
-                Debug.Log("target updated");
+                    Debug.Log("target updated");
 
-                timer = 0;
+                    timer = 0;
+                }
             }
+            else
+            {
+                agent.SetDestination(player.transform.position);
+            }
+
+
         }
 
 
