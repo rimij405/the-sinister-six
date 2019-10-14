@@ -155,7 +155,7 @@ public class ViewCone : MonoBehaviour
         if (!this.TargetExists || other.gameObject != this.Target)
         {
             // Do nothing if not the appropriate target.
-            Debug.Log("Trigger activated by non-targeted game object.");
+            //Debug.Log("Trigger activated by non-targeted game object.");
             return;
         }
         else
@@ -195,7 +195,7 @@ public class ViewCone : MonoBehaviour
         if (!this.TargetExists || other.gameObject != this.Target)
         {
             // Do nothing, because no target exists.
-            Debug.Log("OnTriggerStay: No target exists.");
+            //Debug.Log("OnTriggerStay: No target exists.");
             return;
         }
 

@@ -1,17 +1,14 @@
 fileFormatVersion: 2
-guid: a4571133707902449ade70c3e89004ca
+guid: 6c227144141b6d440a2069bb925c23c6
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -4332264956833623277
-    second: Idle
+    second: IdleR
   - first:
-      74: -6012572202085516864
-    second: Blast
-  - first:
-      74: 1062539839617110541
-    second: Snap
+      74: 8855744353902702104
+    second: SnapR
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -41,7 +38,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Idle
+      name: IdleR
       takeName: arm_animations
       internalID: -4332264956833623277
       firstFrame: 120
@@ -52,8 +49,8 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
@@ -70,38 +67,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Blast
+      name: SnapR
       takeName: arm_animations
-      internalID: -6012572202085516864
-      firstFrame: 164
-      lastFrame: 196
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: Snap
-      takeName: arm_animations
-      internalID: 1062539839617110541
+      internalID: 8855744353902702104
       firstFrame: 87
       lastFrame: 112
       wrapMode: 0
