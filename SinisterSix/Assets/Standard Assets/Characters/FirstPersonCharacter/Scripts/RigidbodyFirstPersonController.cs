@@ -148,6 +148,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 if (hit.transform.gameObject.tag == "Enemy" && !hit.transform.gameObject.GetComponent<AICharacterControl>().isBound)
                 {
+                    animator.Play("Snap");
                     hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
                     hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
                     Debug.Log(transform.GetChild(2).transform.GetChild(0).name);           
@@ -160,7 +161,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         IEnumerator Example(Transform child0, Transform child1, Transform child2, Transform child3, Transform child4, Animator anim)
         {
-            yield return new WaitForSeconds(0.7f);
+            yield return new WaitForSeconds(0.6f);
             child1.GetComponent<ParticleSystem>().Play();
             yield return new WaitForSeconds(.1f);
             child0.GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
@@ -168,7 +169,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             child2.GetComponent<ParticleSystem>().Play();
             child3.GetComponent<ParticleSystem>().Play();
             child4.GetComponent<ParticleSystem>().Play();
-            anim.SetBool("IsSnap", false);
+            //anim.SetBool("IsSnap", false);
 
         }
 
@@ -254,7 +255,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
                 isReticleShrinking = true;
-                animator.SetBool("IsSnap", true);
+                Bind();
             }
 
             Drain();
