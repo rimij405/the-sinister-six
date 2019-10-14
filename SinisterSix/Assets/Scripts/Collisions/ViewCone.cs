@@ -160,7 +160,7 @@ public class ViewCone : MonoBehaviour
         }
         else
         {
-            Debug.Log("Trigger entered by target.");
+            //Debug.Log("Trigger entered by target.");
         }
 
 

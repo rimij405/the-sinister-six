@@ -108,7 +108,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public Drain lastSpawner;
         public bool isExpandOk = true;
         public bool isReticleLooping = false;
-        public Animator animator;
+        public Animator animatorR;
+        public Animator animatorL;
 
         public Vector3 Velocity
         {
@@ -148,24 +149,32 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 if (hit.transform.gameObject.tag == "Enemy" && !hit.transform.gameObject.GetComponent<AICharacterControl>().isBound)
                 {
-                    animator.Play("Snap");
+                    animatorR.Play("Snap");
                     hit.transform.gameObject.GetComponent<AICharacterControl>().agent.SetDestination(hit.transform.gameObject.GetComponent<AICharacterControl>().agent.transform.position);
                     hit.transform.gameObject.GetComponent<AICharacterControl>().isBound = true;
                     Debug.Log(transform.GetChild(2).transform.GetChild(0).name);           
 
                     //wait for chains
-                    StartCoroutine(Example(hit.transform.GetChild(0), hit.transform.GetChild(1), hit.transform.GetChild(2), hit.transform.GetChild(3), hit.transform.GetChild(4), animator));
+                    StartCoroutine(Example(hit.transform.GetChild(0), hit.transform.GetChild(1), hit.transform.GetChild(2), hit.transform.GetChild(3), hit.transform.GetChild(4), animatorR));
                 }
             }
         }
 
         IEnumerator Example(Transform child0, Transform child1, Transform child2, Transform child3, Transform child4, Animator anim)
         {
-            yield return new WaitForSeconds(0.6f);
+            yield return new WaitForSeconds(0.5f);
             child1.GetComponent<ParticleSystem>().Play();
             yield return new WaitForSeconds(.1f);
-            child0.GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
-            child0.GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
+            child0.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
+            child0.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
+
+            child0.transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
+            child0.transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
+
+            child0.transform.GetChild(2).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
+            child0.transform.GetChild(2).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
+            //child0.GetComponent<Renderer>().material.SetFloat("_StasisAmount", .2f);
+            //child0.GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 1);
             child2.GetComponent<ParticleSystem>().Play();
             child3.GetComponent<ParticleSystem>().Play();
             child4.GetComponent<ParticleSystem>().Play();
@@ -194,10 +203,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
                             {
                                 if (!hit.transform.gameObject.GetComponent<Drain>().isBeingDrained)
                                 {
+                                    animatorL.Play("DrainStart");
+                                    animatorL.SetBool("IsBind", true);
                                     hit.transform.gameObject.GetComponent<Drain>().isBeingDrained = true;
                                     lastSpawner = hit.transform.gameObject.GetComponent<Drain>();
                                     lastSpawner.GetComponent<ParticleSystem>().Play();
-                                    Debug.Log("is being drained true");
+                                    //Debug.Log("is being drained true");
                                 }
                             }
                             else
@@ -205,6 +216,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                                 if (lastSpawner != null)
                                 {
                                     lastSpawner.transform.gameObject.GetComponent<ParticleSystem>().Stop();
+                                    animatorL.SetBool("IsBind", false);
                                 }
                             }
                             break;
@@ -213,10 +225,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
                         default:
                             if (lastSpawner != null)
                             {
-                                Debug.Log("is being drained false not a spawner");
+                                //Debug.Log("is being drained false not a spawner");
 
                                 lastSpawner.isBeingDrained = false;
                                 lastSpawner.transform.gameObject.GetComponent<ParticleSystem>().Stop();
+                                animatorL.SetBool("IsBind", false);
                                 lastSpawner = null;
                             }
                             break;
@@ -230,6 +243,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     Debug.Log("is being drained false input released");
 
                     lastSpawner.isBeingDrained = false;
+                    animatorL.SetBool("IsBind", false);
                     lastSpawner.transform.gameObject.GetComponent<ParticleSystem>().Stop();
                     lastSpawner = null;
                 }
@@ -246,7 +260,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             reticle = GameObject.Find("Reticle");
 
-            animator = transform.GetChild(2).transform.GetChild(0).GetComponent<Animator>();
+            animatorR = transform.GetChild(2).transform.GetChild(0).GetComponent<Animator>();
+            animatorL = transform.GetChild(2).transform.GetChild(1).GetComponent<Animator>();
         }
 
 

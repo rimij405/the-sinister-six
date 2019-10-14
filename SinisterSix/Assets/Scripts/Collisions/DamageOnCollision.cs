@@ -13,7 +13,7 @@ public class DamageOnCollision : MonoBehaviour
     /// <summary>
     /// The target to check.
     /// </summary>
-    public DamageOnCollisionTarget target = null;
+    public DamageOnCollisionTarget target;
 
     /// <summary>
     /// Event fired when collision with target is successful.

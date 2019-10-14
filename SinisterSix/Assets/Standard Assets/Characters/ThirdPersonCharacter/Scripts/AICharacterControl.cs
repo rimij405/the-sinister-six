@@ -33,10 +33,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 	        agent.updateRotation = false;
 	        agent.updatePosition = true;
 
-            //set material atribytes
-            character.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", 0.0f);
-            character.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 0.0f);
-
             //set timers
             timer = wanderTime;
             boundTimer = 0;
@@ -69,8 +65,14 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 if (boundTimer >= boundTime)
                 {
                     isBound = false;
-                    character.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", 0.0f);
-                    character.transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 0.0f);
+                    character.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", 0.0f);
+                    character.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 0.0f);
+
+                    character.transform.GetChild(0).transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", 0.0f);
+                    character.transform.GetChild(0).transform.GetChild(1).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 0.0f);
+
+                    character.transform.GetChild(0).transform.GetChild(2).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_StasisAmount", 0.0f);
+                    character.transform.GetChild(0).transform.GetChild(2).transform.GetChild(0).transform.GetChild(0).GetComponent<Renderer>().material.SetFloat("_NoiseAmount", 0.0f);
                     boundTimer = 0;
                 }
             }
