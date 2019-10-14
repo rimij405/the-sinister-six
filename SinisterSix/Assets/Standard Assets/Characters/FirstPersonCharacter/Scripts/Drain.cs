@@ -15,6 +15,7 @@ public class Drain : MonoBehaviour
     void Start()
     {
         child = Instantiate(EnemyRef, new Vector3(transform.position.x, transform.position.y + 0.01f, transform.position.z), Quaternion.identity);
+        //child.GetComponent<ViewCone>().SetTarget();
         corruptionLevel = 2;
         isCorrupted = true;
     }

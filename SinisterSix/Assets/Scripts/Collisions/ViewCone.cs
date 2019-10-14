@@ -119,7 +119,7 @@ public class ViewCone : MonoBehaviour
         this.UpdateColliderRadius();
 
         // Load the target.
-        this.target = this.Target;
+        target = GameObject.Find("Player");
     }
 
     // Update is called once per frame
